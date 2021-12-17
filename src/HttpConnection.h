@@ -43,6 +43,7 @@
 
 #include "SocketBuffer.h"
 #include "Command.h"
+#include "SocksProxySocket.h"
 
 namespace aria2 {
 
@@ -86,6 +87,10 @@ private:
   SocketBuffer socketBuffer_;
 
   HttpRequestEntries outstandingHttpRequests_;
+
+  // proxySocket_ is only used in SOCKS proxy.
+  // Put it here to ensure proxySocket_ has the same lifetime as httpConnection.
+  std::shared_ptr<SocksProxySocket> proxySocket_;
 
   std::string eraseConfidentialInfo(const std::string& request);
   void sendRequest(std::unique_ptr<HttpRequest> httpRequest,
@@ -132,6 +137,16 @@ public:
   const std::shared_ptr<SocketRecvBuffer>& getSocketRecvBuffer() const
   {
     return socketRecvBuffer_;
+  }
+
+  const std::shared_ptr<SocksProxySocket>& getProxySocket() const
+  {
+    return proxySocket_;
+  }
+
+  void setProxySocket(const std::shared_ptr<SocksProxySocket>& proxySocket)
+  {
+    proxySocket_ = proxySocket;
   }
 };
 

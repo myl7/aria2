@@ -105,6 +105,10 @@ public:
   // Returns status replied from proxy server. 0 is OK.
   int startUdpAssociate(const std::string& listenAddr, uint16_t listenPort,
                         std::string& bndAddr, uint16_t& bndPort);
+
+  // TODO: No impl
+  ssize_t startTcpConnect(const std::string& listenAddr, uint16_t listenPort,
+                          std::string& bndAddr, uint16_t& bndPort);
 };
 
 } // namespace aria2
