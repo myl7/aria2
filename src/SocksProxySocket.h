@@ -106,9 +106,17 @@ public:
   int startUdpAssociate(const std::string& listenAddr, uint16_t listenPort,
                         std::string& bndAddr, uint16_t& bndPort);
 
-  // TODO: No impl
-  ssize_t startTcpConnect(const std::string& listenAddr, uint16_t listenPort,
-                          std::string& bndAddr, uint16_t& bndPort);
+  // Send a CONNECT cmd to start TCP proxy.
+  // For protocols with only client-to-server connections like HTTP.
+  int startTcpConnect(const std::string& dstAddr, uint16_t dstPort,
+                      std::string& bndAddr, uint16_t& bndPort);
+
+  // Send a BIND cmd to start secondary TCP proxy after CONNECT is sent.
+  // For protocols with server-to-client connections like FTP.
+  // TODO: No implementation yet.
+  int startTcpBind(const std::string& dstAddr, uint16_t dstPort,
+                   std::string& bndAddr1, uint16_t& bndPort1,
+                   std::string& bndAddr2, uint16_t& bndPort2);
 };
 
 } // namespace aria2

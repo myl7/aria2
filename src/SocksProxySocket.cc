@@ -242,4 +242,23 @@ int SocksProxySocket::startUdpAssociate(const std::string& listenAddr,
   return rep;
 }
 
+int SocksProxySocket::startTcpConnect(const std::string& dstAddr,
+                                      uint16_t dstPort, std::string& bndAddr,
+                                      uint16_t& bndPort)
+{
+  sendCmd(SOCKS_CMD_CONNECT, dstAddr, dstPort, false);
+
+  int bFamily;
+  std::string bAddr;
+  uint16_t bPort;
+  int rep = receiveReply(bFamily, bAddr, bPort);
+  if (rep != C_OK) {
+    return rep;
+  }
+
+  bndAddr = bAddr;
+  bndPort = bPort;
+  return rep;
+}
+
 } // namespace aria2
