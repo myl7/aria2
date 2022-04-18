@@ -157,8 +157,11 @@ std::string DefaultBtAnnounce::getAnnounceUrl()
   NetStat& stat = downloadContext_->getNetStat();
   int64_t left =
       pieceStorage_->getTotalLength() - pieceStorage_->getCompletedLength();
-  // Use last 8 bytes of peer ID as a key
+  // Generate 8 bytes random data as a key
   const size_t keyLen = 8;
+  std::vector<unsigned char> key;
+  key.resize(keyLen);
+  util::generateRandomData(&key[0], keyLen);
   std::string uri = announceList_.getAnnounce();
   uri += uriHasQuery(uri) ? "&" : "?";
   uri +=
@@ -177,10 +180,10 @@ std::string DefaultBtAnnounce::getAnnounceUrl()
           util::percentEncode(bittorrent::getStaticPeerId(), PEER_ID_LENGTH)
               .c_str(),
           stat.getSessionUploadLength(), stat.getSessionDownloadLength(), left,
-          util::percentEncode(
-              bittorrent::getStaticPeerId() + PEER_ID_LENGTH - keyLen, keyLen)
-              .c_str(),
-          numWant);
+          // util::percentEncode(
+          //     bittorrent::getStaticPeerId() + PEER_ID_LENGTH - keyLen,
+          //     keyLen) .c_str(),
+          util::percentEncode(&key[0], keyLen).c_str(), numWant);
   if (tcpPort_) {
     uri += fmt("&port=%u", tcpPort_);
   }
